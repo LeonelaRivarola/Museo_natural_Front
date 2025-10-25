@@ -1,35 +1,81 @@
-import { Tabs } from 'expo-router';
-import React from 'react';
+import React, { useState } from "react";
+import { Tabs } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { TouchableOpacity, SafeAreaView, Platform } from "react-native";
+import SideMenu from "../../components/organisms/SideMenu";
 
-import { HapticTab } from '@/components/haptic-tab';
-import { IconSymbol } from '@/components/ui/icon-symbol';
-import { Colors } from '@/constants/theme';
-import { useColorScheme } from '@/hooks/use-color-scheme';
-
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function TabsLayout() {
+  const [menuVisible, setMenuVisible] = useState(false);
 
   return (
-    <Tabs
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme ?? 'light'].tint,
-        headerShown: false,
-        tabBarButton: HapticTab,
-      }}>
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="house.fill" color={color} />,
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      <Tabs
+        screenOptions={{
+          headerStyle: { backgroundColor: "#c47719ff" },
+          headerTintColor: "#fff",
+          tabBarActiveTintColor: "#c47719ff",
+          tabBarInactiveTintColor: "#777",
+          tabBarStyle:
+            Platform.OS === "web"
+              ? { display: "none" } // 🔥 Oculta la barra de tabs en la web
+              : {
+                  backgroundColor: "#fff",
+                  paddingBottom: 5,
+                  height: 60,
+                  borderTopColor: "#ddd",
+                  borderTopWidth: 1,
+                },
+          headerRight: () => (
+            <TouchableOpacity
+              style={{ marginRight: 16 }}
+              onPress={() => setMenuVisible(true)}
+            >
+              <Ionicons name="menu-outline" size={28} color="#fff" />
+            </TouchableOpacity>
+          ),
+          headerTitleAlign: "center",
+          headerTitle: "Museo Natural",
         }}
-      />
-      <Tabs.Screen
-        name="explore"
-        options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
-        }}
-      />
-    </Tabs>
+      >
+        <Tabs.Screen
+          name="home"
+          options={{
+            title: "Inicio",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="home-outline" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="galeria"
+          options={{
+            title: "Galería",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="images-outline" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="qr"
+          options={{
+            title: "QR",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="scan-outline" color={color} size={size} />
+            ),
+          }}
+        />
+        <Tabs.Screen
+          name="tienda"
+          options={{
+            title: "Tienda",
+            tabBarIcon: ({ color, size }) => (
+              <Ionicons name="storefront-outline" color={color} size={size} />
+            ),
+          }}
+        />
+      </Tabs>
+
+      <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
+    </SafeAreaView>
   );
 }
