@@ -1,23 +1,14 @@
-import React, { useRef, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-  Dimensions,
-  Modal,
-  TouchableWithoutFeedback,
-  Platform,
-} from "react-native";
+import { useThemeColor } from "@/hooks/use-theme-color";
 import { Ionicons } from "@expo/vector-icons";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import { Animated, Dimensions, Modal, Platform, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from "react-native";
+
 
 const { width } = Dimensions.get("window");
 
-// =====================
-// 🔹 Tipos de Props
-// =====================
+// Props
 interface MenuItemProps {
   label: string;
   iconName: keyof typeof Ionicons.glyphMap;
@@ -30,9 +21,7 @@ interface SideMenuProps {
   onClose: () => void;
 }
 
-// =====================
-// 🔹 Componente MenuItem
-// =====================
+// Componente MenuItem
 const MenuItem: React.FC<MenuItemProps> = ({
   label,
   iconName,
@@ -58,15 +47,16 @@ const MenuItem: React.FC<MenuItemProps> = ({
   );
 };
 
-// =====================
-// 🔹 Componente Principal
-// =====================
+// Componente Principal
 const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
   const router = useRouter();
+  const accentColor = useThemeColor({}, "tint");
+  const [user, setUser] = useState<any>(null);
 
   const slideAnim = useRef(new Animated.Value(width)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
 
+  //animacion para la apertura y el cierre
   useEffect(() => {
     if (visible) {
       Animated.parallel([
@@ -95,14 +85,27 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
         }),
       ]).start();
     }
-  }, [visible, slideAnim, fadeAnim]);
+  }, [visible]);
+
+  //cargar usuario al abrir el menu
+  useEffect(() => {
+    const loadUser = async () => {
+      const savedUser = await AsyncStorage.getItem("user");
+      if (savedUser) setUser(JSON.parse(savedUser));
+    };
+    loadUser();
+  }, [visible]);
+
+  //cerrar sesion
+  const logout = async () => {
+    await AsyncStorage.multiRemove(["token", "user", "rol"]);
+    setUser(null);
+    onClose();
+    router.push("/login");
+  };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="none"
-      onRequestClose={onClose} // Soporte botón "back" en Android
+    <Modal transparent visible={visible} animationType="none" onRequestClose={onClose} //  botón "back" en Android
     >
       <View style={StyleSheet.absoluteFillObject}>
         {/* Fondo oscuro */}
@@ -119,57 +122,27 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
         >
           <Text style={styles.title}>Menú</Text>
 
-          <MenuItem
-            label="Inicio"
-            iconName="home-outline"
-            onPress={() => {
-              onClose();
-              router.push("/(tabs)/home");
-            }}
-          />
-          <MenuItem
-            label="Galería"
-            iconName="images-outline"
-            onPress={() => {
-              onClose();
-              router.push("/(tabs)/galeria");
-            }}
-          />
-          <MenuItem
-            label="Tienda"
-            iconName="storefront-outline"
-            onPress={() => {
-              onClose();
-              router.push("/(tabs)/tienda");
-            }}
-          />
-          <MenuItem
-            label="Eventos"
-            iconName="calendar-outline"
-            onPress={() => console.log("Eventos")}
-          />
-          <MenuItem
-            label="Sobre Nosotros"
-            iconName="information-circle-outline"
-            onPress={() => console.log("Sobre Nosotros")}
-          />
-          <MenuItem
-            label="Ayuda"
-            iconName="help-circle-outline"
-            onPress={() => console.log("Ayuda")}
-          />
+          <MenuItem label="Inicio" iconName="home-outline" onPress={() => { onClose(); router.push("/(tabs)/home"); }} />
+          <MenuItem label="Galería" iconName="images-outline" onPress={() => { onClose(); router.push("/(tabs)/galeria"); }} />
+          <MenuItem label="Tienda" iconName="storefront-outline" onPress={() => { onClose(); router.push("/(tabs)/tienda"); }} />
+          <MenuItem label="Eventos" iconName="calendar-outline" onPress={() => console.log("Eventos")} />
+          <MenuItem label="Ayuda" iconName="help-circle-outline" onPress={() => console.log("Ayuda")} />
+
 
           <View style={styles.separator} />
 
-          <MenuItem
-            label="Iniciar Sesión"
-            iconName="log-in-outline"
-            highlight
-            onPress={() => {
-              onClose();
-               router.push("/login");
-            }}
-          />
+          {user ? (
+            <>
+              <View style={styles.avatarContainer}>
+                <Ionicons name="person-circle-outline" size={48} color={accentColor} />
+                <Text style={styles.userName}>{user.nombre} {user.apellido}</Text>
+              </View>
+
+              <MenuItem label="Cerrar sesión" iconName="log-out-outline" highlight onPress={logout} />
+            </>
+          ) : (
+            <MenuItem label="Iniciar sesión" iconName="log-in-outline" highlight onPress={() => { onClose(); router.push("/login"); }} />
+          )}
         </Animated.View>
       </View>
     </Modal>
@@ -178,9 +151,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
 
 export default SideMenu;
 
-// =====================
-// 🔹 Estilos
-// =====================
+// Estilos
 const styles = StyleSheet.create({
   overlay: {
     ...StyleSheet.absoluteFillObject,
@@ -233,5 +204,17 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: "#ccc",
     marginVertical: 10,
+  },
+  avatarContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginTop: 10,
+    marginBottom: 5,
+  },
+  userName: {
+    fontSize: 18,
+    marginLeft: 10,
+    color: "#333",
+    fontWeight: "600",
   },
 });

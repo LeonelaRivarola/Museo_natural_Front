@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "miApp",
-    "slug": "miApp",
+    "name": "Museo_Natural",
+    "slug": "Museo_Natural",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
