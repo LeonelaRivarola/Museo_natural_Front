@@ -1,8 +1,10 @@
+import HorarioCard from "@/components/molecules/HorarioCard";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useRouter } from "expo-router";
 import React from "react";
 import {
   Dimensions,
+  Image,
   ImageBackground,
   Platform,
   SafeAreaView,
@@ -10,7 +12,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from "react-native";
 import ImageCarousel from "../../components/organisms/ImagenCarousel";
 import NavbarWeb from "../../components/organisms/Navbar";
@@ -20,21 +22,23 @@ export default function HomeScreen() {
   const windowHeight = Dimensions.get("window").height;
 
   const backgroundColor = useThemeColor({}, "background");
-  const buttonColor = useThemeColor({}, "tint");
   const backgroundImage = require("../../assets/images/portada_inicio.jpg");
 
   const router = useRouter();
 
+
+  const categorias = [
+    { titulo: "Arqueología", icon: require("../../assets/icons/arqueologia.png"), ruta: "/arqueologia/index" },
+    { titulo: "Herbarios", icon: require("../../assets/icons/herbario.png"), ruta: "/herbarios/index" },
+    { titulo: "Zoología", icon: require("../../assets/icons/zoologia.png"), ruta: "/zoologia/index" },
+    { titulo: "Paleontología", icon: require("../../assets/icons/paleo.png"), ruta: "/paleo/index" },
+  ] as const;
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor }}>
-      {/* 🔹 Web: Navbar fija arriba */}
       {Platform.OS === "web" && <NavbarWeb active="/(tabs)/home" />}
-
-
-      {/* 🔹 Mobile: Navbar arriba + menú lateral  */}
       {Platform.OS !== "web" && <NavbarMobile />}
 
-      {/* 🔹 Contenido principal */}
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
         <View
           style={[
@@ -48,25 +52,53 @@ export default function HomeScreen() {
             resizeMode="cover"
           >
             <View style={styles.overlay}>
-              <View style={styles.overlayTint} /> 
+              <View style={styles.overlayTint} />
               <View style={styles.textContainer}>
-                <Text style={styles.title}>Museo Natural</Text>
+                <Text style={styles.title}>¡Bienvenidos/as!</Text>
                 <Text style={styles.subtitle}>Descubrí la historia y naturaleza</Text>
-
-                {Platform.OS !== "web" && (
-                  <TouchableOpacity
-                    style={[styles.button, { backgroundColor: buttonColor }]}
-                    onPress={() => router.push("/(tabs)/tienda")}
-                  >
-                    <Text style={styles.buttonText}>Explorar</Text>
-                  </TouchableOpacity>
-                )}
               </View>
+
+              {/* 🔹 Círculos de categorías */}
+              {Platform.OS === "web" ? (
+                <View style={styles.categoriasContainerWeb}>
+                  {categorias.map((item, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={styles.categoria}
+                      onPress={() => router.push({ pathname: item.ruta })}
+                    >
+                      <View style={styles.circulo}>
+                        <Image source={item.icon} style={styles.icono} />
+                      </View>
+                      <Text style={styles.categoriaTexto}>{item.titulo}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              ) : (
+                <ScrollView
+                  horizontal
+                  showsHorizontalScrollIndicator={false}
+                  contentContainerStyle={styles.categoriasContainerMobile}
+                >
+                  {categorias.map((item, i) => (
+                    <TouchableOpacity
+                      key={i}
+                      style={styles.categoria}
+                      onPress={() => router.push({ pathname: item.ruta })}
+                    >
+                      <View style={styles.circulo}>
+                        <Image source={item.icon} style={styles.icono} />
+                      </View>
+                      <Text style={styles.categoriaTexto}>{item.titulo}</Text>
+                    </TouchableOpacity>
+                  ))}
+                </ScrollView>
+              )}
             </View>
+
           </ImageBackground>
         </View>
-
-
+            <HorarioCard />
         <ImageCarousel />
       </ScrollView>
 
@@ -96,13 +128,14 @@ const styles = StyleSheet.create({
   },
   overlayTint: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(85, 48, 4, 0.35)", // tono naranja translúcido
+    backgroundColor: Platform.OS === "web" ? "rgba(0, 0, 0, 0.55)" : "rgba(0, 0, 0, 0.4)",
     mixBlendMode: "multiply",
   },
   textContainer: {
     zIndex: 2,
     alignItems: "center",
     paddingHorizontal: 20,
+    marginTop: "10%",
   },
   title: {
     fontSize: Platform.OS === "web" ? 56 : 38,
@@ -111,9 +144,6 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
     marginBottom: 10,
     textAlign: "center",
-    textShadowColor: "rgba(0,0,0,0.4)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: Platform.OS === "web" ? 22 : 18,
@@ -131,5 +161,54 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 18,
     fontWeight: "bold",
+  },
+
+  categoriasContainerWeb: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    justifyContent: "center",
+    marginTop: 30,
+    gap: 80,
+  },
+
+  categoriasContainerMobile: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    alignItems: "flex-end",
+    paddingHorizontal: 20,
+    paddingBottom: 10,
+  },
+
+  categoria: {
+    justifyContent: "center",
+    alignItems: "center",
+    // width:  150,
+    // marginBottom: 20,
+    marginHorizontal: 10,
+  },
+
+  circulo: {
+    width: Platform.OS === "web" ? 120 : 70,
+    height: Platform.OS === "web" ? 120 : 70,
+    borderRadius: Platform.OS === "web" ? 70 : 35,
+    borderWidth: 2,
+    borderColor: "#e27713ff",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+    marginBottom: 8,
+  },
+
+  icono: {
+    width: Platform.OS === "web" ? 75 : 50,
+    height: Platform.OS === "web" ? 75 : 50,
+    tintColor: "#fff",
+  },
+
+  categoriaTexto: {
+    color: "#fff",
+    fontSize: 14,
+    fontWeight: "600",
+    textAlign: "center",
   },
 });
