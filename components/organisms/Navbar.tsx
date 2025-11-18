@@ -1,7 +1,7 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useAuth } from "@/hooks/useAuth";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router"; // ✅ Importar router
+import { usePathname, useRouter } from "expo-router";
 import React, { useState } from "react";
 import {
   Image,
@@ -13,13 +13,18 @@ import {
 } from "react-native";
 import SideMenu from "../organisms/SideMenu";
 
-export default function NavbarWeb() {
+type NavbarWebProps = {
+  active?: string; // puede venir o no
+};
+
+export default function NavbarWeb({ active }: NavbarWebProps) {
   const accentColor = useThemeColor({}, "tint");
   const [menuVisible, setMenuVisible] = useState(false);
-  const router = useRouter(); // Hook para navegar
-  const { user, logout } = useAuth(); //hook para saber si hay usuario
+  const router = useRouter();
+  const pathname = usePathname(); // 🔹 Detectar ruta actual
+  const { user, logout } = useAuth();
 
-  // 🔹 Mobile 
+  // 🔹 Mobile
   if (Platform.OS !== "web") {
     return (
       <View style={styles.navbarMobile}>
@@ -48,6 +53,14 @@ export default function NavbarWeb() {
   }
 
   // 🔹 Web
+  const links: { name: string; path: `/home` | `/galeria` | `/tienda` | `/ayuda` }[] = [
+  { name: "Inicio", path: "/home" },
+  { name: "Galería", path: "/galeria" },
+  { name: "Tienda", path: "/tienda" },
+  { name: "Ayuda", path: "/ayuda" },
+];
+
+
   return (
     <View style={styles.navbarWrapper}>
       <View style={styles.navbar}>
@@ -63,26 +76,28 @@ export default function NavbarWeb() {
         </View>
 
         <View style={styles.rightContainer}>
-          {/* ✅ Enlaces de navegación funcionales */}
           <View style={styles.navLinks}>
-            <TouchableOpacity onPress={() => router.push("/home")}>
-              <Text style={styles.link}>Inicio</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => router.push("/galeria")}>
-              <Text style={styles.link}>Galería</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => router.push("/(tabs)/tienda")}>
-              <Text style={styles.link}>Tienda</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity onPress={() => router.push("/ayuda")}>
-              <Text style={styles.link}>Ayuda</Text>
-            </TouchableOpacity>
+            {links.map((link) => {
+              const isActive = pathname === link.path;
+              return (
+                <TouchableOpacity
+                  key={link.path}
+                  onPress={() => router.push(link.path)}
+                >
+                  <Text
+                    style={[
+                      styles.link,
+                      isActive && { color: accentColor, fontWeight: "700" },
+                    ]}
+                  >
+                    {link.name}
+                  </Text>
+                  {isActive && <View style={[styles.activeBar, { backgroundColor: accentColor }]} />}
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
-           {/* 👇 Si el usuario está logueado, mostrar avatar */}
           {user ? (
             <TouchableOpacity onPress={logout} style={styles.avatarContainer}>
               <Ionicons name="person-circle-outline" size={32} color={accentColor} />
@@ -103,7 +118,6 @@ export default function NavbarWeb() {
 }
 
 const styles = StyleSheet.create({
-  // 🔹 Web
   navbarWrapper: {
     width: "100%",
     alignItems: "center",
@@ -121,7 +135,7 @@ const styles = StyleSheet.create({
   navbar: {
     width: "90%",
     maxWidth: 1200,
-    paddingVertical: 8,
+    paddingVertical: 10,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -132,7 +146,7 @@ const styles = StyleSheet.create({
     gap: 12,
   },
   logo: {
-    width: 90,
+    width: 85,
     height: 55,
   },
   title: {
@@ -143,16 +157,23 @@ const styles = StyleSheet.create({
   rightContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 25,
+    gap: 30,
   },
   navLinks: {
     flexDirection: "row",
-    gap: 20,
+    gap: 25,
+    alignItems: "center",
   },
   link: {
     color: "#000",
     fontSize: 16,
     fontWeight: "500",
+    paddingBottom: 6,
+  },
+  activeBar: {
+    height: 3,
+    borderRadius: 2,
+    marginTop: 3,
   },
   loginButton: {
     paddingVertical: 8,
@@ -164,7 +185,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "bold",
   },
-   avatarContainer: {
+  avatarContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 8,
@@ -173,8 +194,7 @@ const styles = StyleSheet.create({
     color: "#000",
     fontWeight: "500",
   },
-
-  // 🔹 Mobile (Android / iOS)
+  // 🔹 Mobile
   navbarMobile: {
     width: "100%",
     flexDirection: "row",

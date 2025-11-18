@@ -1,6 +1,19 @@
 import { useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
-import { ActivityIndicator, Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  ActivityIndicator,
+  Image,
+  Platform,
+  SafeAreaView,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import BottomNavMobile from "../../components/organisms/BottomNavMobil";
+import NavbarWeb from "../../components/organisms/Navbar";
+import NavbarMobile from "../../components/organisms/NavMobil";
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -8,9 +21,13 @@ export default function ProductDetailScreen() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    console.log("🔎 ProductDetail id:", id);
     fetch(`http://172.17.135.163/ProyectoFinal/backend/producto.php?id=${id}`)
       .then((res) => res.json())
-      .then((data) => setProducto(data))
+      .then((data) => {
+        console.log("🔎 Producto recibido:", data);
+        setProducto(Array.isArray(data) ? data[0] : data); // si viene array, tomar el 1er elemento
+      })
       .catch((err) => console.error("❌ Error al cargar producto:", err))
       .finally(() => setLoading(false));
   }, [id]);
@@ -32,22 +49,32 @@ export default function ProductDetailScreen() {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <Image
-        source={{
-          uri: producto.imagen || "https://via.placeholder.com/300x200?text=Sin+Imagen",
-        }}
-        style={styles.image}
-        resizeMode="cover"
-      />
-      <Text style={styles.title}>{producto.nombre}</Text>
-      <Text style={styles.price}>${parseFloat(producto.precio).toFixed(2)}</Text>
-      <Text style={styles.desc}>{producto.descripcion || "Sin descripción disponible."}</Text>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#fff" }}>
+      {/* NAVBAR SUPERIOR */}
+      {Platform.OS === "web" ? <NavbarWeb /> : <NavbarMobile />}
 
-      <TouchableOpacity style={styles.button}>
-        <Text style={styles.buttonText}>Comprar</Text>
-      </TouchableOpacity>
-    </ScrollView>
+      <ScrollView contentContainerStyle={[styles.container, Platform.OS === "web" ? styles.webOffset : null]}>
+        <Image
+          source={{
+            uri: producto.imagen
+              ? `http://172.17.135.163/ProyectoFinal/backend/uploads/${producto.imagen}`
+              : "https://via.placeholder.com/300x200?text=Sin+Imagen",
+          }}
+          style={styles.image}
+          resizeMode="cover"
+        />
+        <Text style={styles.title}>{producto.nombre}</Text>
+        <Text style={styles.price}>${parseFloat(producto.precio).toFixed(2)}</Text>
+        <Text style={styles.desc}>{producto.descripcion || "Sin descripción disponible."}</Text>
+
+        <TouchableOpacity style={styles.button}>
+          <Text style={styles.buttonText}>Comprar</Text>
+        </TouchableOpacity>
+      </ScrollView>
+
+      {/* BOTTOM NAV - solo en móvil */}
+      {Platform.OS !== "web" && <BottomNavMobile />}
+    </SafeAreaView>
   );
 }
 
@@ -60,6 +87,10 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: "#fff",
+    paddingBottom: 120, // suficiente espacio para que no tape el bottom nav
+  },
+  webOffset: {
+    marginTop: 100, // deja espacio para NavbarWeb fixed (ajustá si tu navbar es más grande/pequeño)
   },
   image: {
     width: "100%",

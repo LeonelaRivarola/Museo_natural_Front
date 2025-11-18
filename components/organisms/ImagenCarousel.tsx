@@ -1,11 +1,11 @@
-import React, { useRef, useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
-  View,
-  ScrollView,
   Dimensions,
-  StyleSheet,
   Platform,
+  ScrollView,
+  StyleSheet,
   TouchableOpacity,
+  View,
 } from "react-native";
 import CarouselCard from "../molecules/CarouselCard";
 
@@ -87,30 +87,30 @@ export default function ImageCarousel() {
   // 🔹 Web
   if (Platform.OS === "web") {
     return (
-      <div style={stylesWeb.container}>
-        <div ref={scrollRef} style={stylesWeb.carousel}>
-          {slides.map((slide, i) => (
-            <div key={i} style={stylesWeb.cardWrapper}>
-              <CarouselCard {...slide} />
-            </div>
-          ))}
-        </div>
+      <View style={styles.containerWeb}>
+      <ScrollView
+        horizontal
+        ref={scrollRef}
+        contentContainerStyle={{ flexDirection: "row", gap: 20 }}
+      >
+        {slides.map((slide, i) => (
+          <View key={i} style={{ flex: 1 }}>
+            <CarouselCard {...slide} />
+          </View>
+        ))}
+      </ScrollView>
 
-        {/* 🔘 Indicadores */}
-        <View style={styles.indicators}>
-          {slides.map((_, i) => (
-            <TouchableOpacity
-              key={i}
-              onPress={() => handleIndicatorPress(i)}
-              style={[
-                styles.dot,
-                { opacity: currentIndex === i ? 1 : 0.4 },
-              ]}
-            />
-          ))}
-        </View>
-      </div>
-    );
+      <View style={styles.indicators}>
+        {slides.map((_, i) => (
+          <TouchableOpacity
+            key={i}
+            onPress={() => handleIndicatorPress(i)}
+            style={[styles.dot, { opacity: currentIndex === i ? 1 : 0.4 }]}
+          />
+        ))}
+      </View>
+    </View>
+  );
   }
 
   // 🔹 Mobile
@@ -131,7 +131,7 @@ export default function ImageCarousel() {
         ))}
       </ScrollView>
 
-      {/* 🔘 Indicadores */}
+      {/* Indicadores */}
       <View style={styles.indicators}>
         {slides.map((_, i) => (
           <TouchableOpacity
@@ -173,6 +173,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#c47719",
   },
+  containerWeb: {
+    width: "100%",
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 50,
+    marginBottom: 50,
+  },
+
+  
 });
 
 const stylesWeb: { [key: string]: React.CSSProperties } = {

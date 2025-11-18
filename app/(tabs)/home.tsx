@@ -1,6 +1,6 @@
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useRouter } from "expo-router";
-import React, { useState } from "react";
+import React from "react";
 import {
   Dimensions,
   ImageBackground,
@@ -12,15 +12,12 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import BottomNavMobile from "../../components/organisms/BottomNavMobil";
 import ImageCarousel from "../../components/organisms/ImagenCarousel";
 import NavbarWeb from "../../components/organisms/Navbar";
 import NavbarMobile from "../../components/organisms/NavMobil";
-import SideMenu from "../../components/organisms/SideMenu";
 
 export default function HomeScreen() {
   const windowHeight = Dimensions.get("window").height;
-  const [menuVisible, setMenuVisible] = useState(false);
 
   const backgroundColor = useThemeColor({}, "background");
   const buttonColor = useThemeColor({}, "tint");
@@ -31,15 +28,11 @@ export default function HomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: backgroundColor }}>
       {/* 🔹 Web: Navbar fija arriba */}
-      {Platform.OS === "web" && <NavbarWeb />}
+      {Platform.OS === "web" && <NavbarWeb active="/(tabs)/home" />}
 
-      {/* 🔹 Mobile: Navbar arriba + menú lateral + barra inferior */}
-      {Platform.OS !== "web" && (
-        <>
-          <NavbarMobile />
-          <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
-        </>
-      )}
+
+      {/* 🔹 Mobile: Navbar arriba + menú lateral  */}
+      {Platform.OS !== "web" && <NavbarMobile />}
 
       {/* 🔹 Contenido principal */}
       <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
@@ -49,32 +42,34 @@ export default function HomeScreen() {
             { height: Platform.OS === "web" ? windowHeight * 0.8 : windowHeight * 0.6 },
           ]}
         >
-          <ImageBackground source={backgroundImage} style={styles.background} resizeMode="cover">
+          <ImageBackground
+            source={backgroundImage}
+            style={styles.background}
+            resizeMode="cover"
+          >
             <View style={styles.overlay}>
-              <Text style={styles.title}>Museo Natural</Text>
-              <Text style={styles.subtitle}>Descubrí la historia y naturaleza</Text>
+              <View style={styles.overlayTint} /> 
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>Museo Natural</Text>
+                <Text style={styles.subtitle}>Descubrí la historia y naturaleza</Text>
 
-              {/* 🔹 Botón solo visible en MOBILE */}
-              {Platform.OS !== "web" && (
-                <TouchableOpacity
-                  style={[styles.button, { backgroundColor: buttonColor }]}
-                  onPress={() => router.push("/(tabs)/tienda")}
-
-                >
-                  <Text style={styles.buttonText}>Explorar</Text>
-                </TouchableOpacity>
-              )}
+                {Platform.OS !== "web" && (
+                  <TouchableOpacity
+                    style={[styles.button, { backgroundColor: buttonColor }]}
+                    onPress={() => router.push("/(tabs)/tienda")}
+                  >
+                    <Text style={styles.buttonText}>Explorar</Text>
+                  </TouchableOpacity>
+                )}
+              </View>
             </View>
           </ImageBackground>
         </View>
 
+
         <ImageCarousel />
       </ScrollView>
 
-      {/* 🔹 Barra inferior solo en mobile */}
-      {Platform.OS !== "web" && (
-        <BottomNavMobile onMenuPress={() => setMenuVisible(true)} />
-      )}
     </SafeAreaView>
   );
 }
@@ -95,23 +90,37 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     height: "100%",
-    backgroundColor: "rgba(0,0,0,0.3)",
     justifyContent: "center",
+    alignItems: "center",
+    position: "relative",
+  },
+  overlayTint: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(85, 48, 4, 0.35)", // tono naranja translúcido
+    mixBlendMode: "multiply",
+  },
+  textContainer: {
+    zIndex: 2,
     alignItems: "center",
     paddingHorizontal: 20,
   },
   title: {
-    fontSize: Platform.OS === "web" ? 48 : 36,
-    fontWeight: "bold",
+    fontSize: Platform.OS === "web" ? 56 : 38,
+    fontWeight: "800",
     color: "#fff",
+    letterSpacing: 1,
     marginBottom: 10,
     textAlign: "center",
+    textShadowColor: "rgba(0,0,0,0.4)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
   },
   subtitle: {
     fontSize: Platform.OS === "web" ? 22 : 18,
     color: "#fff",
     marginBottom: 30,
     textAlign: "center",
+    opacity: 0.9,
   },
   button: {
     paddingVertical: 12,
