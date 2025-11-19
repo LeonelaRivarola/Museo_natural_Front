@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import SideMenu from "./SideMenu";
 
-type ValidPaths = "/home" | "/galeria" | "/tienda" | "/ayuda";
+type ValidPaths = "/home" | "/galeria" | "/qr" | "/tienda" | "/menu";
 
 export default function BottomNavMobile() {
   const pathname = usePathname();
@@ -16,8 +16,9 @@ export default function BottomNavMobile() {
   const tabs: { name: string; label: string; path: ValidPaths; icon: string }[] = [
     { name: "home", label: "Inicio", path: "/home", icon: "home-outline" },
     { name: "galeria", label: "Galería", path: "/galeria", icon: "images-outline" },
+    { name: "qr", label: "QR", path: "/qr", icon: "qr-code-outline" },
     { name: "tienda", label: "Tienda", path: "/tienda", icon: "cart-outline" },
-    { name: "ayuda", label: "Ayuda", path: "/ayuda", icon: "help-circle-outline" },
+    { name: "menu", label: "Menu", path: "/tienda", icon: "menu-outline" },
   ];
 
   return (
@@ -27,7 +28,13 @@ export default function BottomNavMobile() {
         return (
           <TouchableOpacity
             key={tab.name}
-            onPress={() => router.push(tab.path)}
+            onPress={() => {
+              if (tab.name === "menu") {
+                setMenuVisible(true);
+              } else {
+                router.push(tab.path as any);
+              }
+            }}
             style={styles.tabButton}
           >
             <Ionicons
@@ -42,10 +49,6 @@ export default function BottomNavMobile() {
         );
       })}
 
-      {/* Botón de menú */}
-      <TouchableOpacity onPress={() => setMenuVisible(true)} style={styles.menuButton}>
-        <Ionicons name="menu-outline" size={28} color={accentColor} />
-      </TouchableOpacity>
 
       {/* SideMenu Modal */}
       <SideMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />

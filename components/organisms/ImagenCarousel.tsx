@@ -5,15 +5,14 @@ import {
   ScrollView,
   StyleSheet,
   TouchableOpacity,
-  View
+  View,
 } from "react-native";
 import CarouselCard from "../molecules/CarouselCard";
 
 const { width } = Dimensions.get("window");
 
-// SOLO ANDROID — coverflow style
-const CARD_WIDTH = width * 0.78;
-const SPACING = -60; // 🔥 Superposición real
+const CARD_WIDTH = width * 0.90;
+const SPACING = 10; // ← Spacing positivo
 
 const slides = [
   {
@@ -38,27 +37,21 @@ export default function ImageCarousel(): React.ReactElement {
   const scrollRef = useRef<ScrollView | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // AUTO SCROLL
   useEffect(() => {
     const interval = setInterval(() => {
-      const nextIndex = (currentIndex + 1) % slides.length;
-      const offset = nextIndex * (CARD_WIDTH + SPACING);
-
-      scrollRef.current?.scrollTo({
-        x: offset,
-        animated: true,
-      });
-
-      setCurrentIndex(nextIndex);
+      const next = (currentIndex + 1) % slides.length;
+      const offset = next * (CARD_WIDTH + SPACING);
+      scrollRef.current?.scrollTo({ x: offset, animated: true });
+      setCurrentIndex(next);
     }, 3500);
 
     return () => clearInterval(interval);
   }, [currentIndex]);
 
-  const handleIndicatorPress = (index: number) => {
-    const offset = index * (CARD_WIDTH + SPACING);
-    setCurrentIndex(index);
+  const handleIndicatorPress = (i: number) => {
+    const offset = i * (CARD_WIDTH + SPACING);
     scrollRef.current?.scrollTo({ x: offset, animated: true });
+    setCurrentIndex(i);
   };
 
   return (
@@ -87,22 +80,27 @@ export default function ImageCarousel(): React.ReactElement {
             itemOffset + (CARD_WIDTH + SPACING),
           ];
 
-          // ESCALA — centro grande, laterales chicos
           const scale = animatedX.interpolate({
             inputRange,
-            outputRange: [0.85, 1, 0.85],
+            outputRange: [0.8, 1, 0.8],
+            extrapolate: "clamp",
+          });
+
+          const rotateY = animatedX.interpolate({
+            inputRange,
+            outputRange: ["20deg", "0deg", "-20deg"],
+            extrapolate: "clamp",
+          });
+
+          const opacity = animatedX.interpolate({
+            inputRange,
+            outputRange: [0.5, 1, 0.5],
             extrapolate: "clamp",
           });
 
           const translateX = animatedX.interpolate({
             inputRange,
-            outputRange: [-25, 0, 25],
-            extrapolate: "clamp",
-          });
-          // NUEVO: inclinación suave hacia adentro
-          const rotateY = animatedX.interpolate({
-            inputRange,
-            outputRange: ["15deg", "0deg", "-15deg"],
+            outputRange: [40, 0, -40],
             extrapolate: "clamp",
           });
 
@@ -112,11 +110,12 @@ export default function ImageCarousel(): React.ReactElement {
               style={{
                 width: CARD_WIDTH,
                 marginRight: SPACING,
+                opacity,
                 transform: [
-                  { perspective: 600 },
+                  { perspective: 800 },
                   { translateX },
-                  { rotateY },
                   { scale },
+                  { rotateY },
                 ],
               }}
             >
@@ -124,6 +123,7 @@ export default function ImageCarousel(): React.ReactElement {
             </Animated.View>
           );
         })}
+
 
       </Animated.ScrollView>
 
@@ -146,16 +146,16 @@ export default function ImageCarousel(): React.ReactElement {
 const styles = StyleSheet.create({
   container: {
     height: 360,
-    marginVertical: 40,
+    marginVertical: 10,
   },
   indicators: {
     flexDirection: "row",
     justifyContent: "center",
-    marginTop: 10,
+    marginTop: 1,
     gap: 8,
   },
   dot: {
-    width: 10,
+    width: 20,
     height: 10,
     borderRadius: 5,
     backgroundColor: "#c47719",

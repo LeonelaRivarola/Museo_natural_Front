@@ -14,6 +14,8 @@ import {
   TouchableOpacity,
   View
 } from "react-native";
+import Novedades from "../../components/molecules/Novedades";
+import VisitBanner from "../../components/molecules/VisitaBanner";
 import ImageCarousel from "../../components/organisms/ImagenCarousel";
 import NavbarWeb from "../../components/organisms/Navbar";
 import NavbarMobile from "../../components/organisms/NavMobil";
@@ -28,10 +30,10 @@ export default function HomeScreen() {
 
 
   const categorias = [
-    { titulo: "Arqueología", icon: require("../../assets/icons/arqueologia.png"), ruta: "/arqueologia/index" },
-    { titulo: "Herbarios", icon: require("../../assets/icons/herbario.png"), ruta: "/herbarios/index" },
-    { titulo: "Zoología", icon: require("../../assets/icons/zoologia.png"), ruta: "/zoologia/index" },
-    { titulo: "Paleontología", icon: require("../../assets/icons/paleo.png"), ruta: "/paleo/index" },
+    { titulo: "Arqueología", icon: require("../../assets/icons/arqueologia.png"), ruta: "/arqueologia" },
+    { titulo: "Herbarios", icon: require("../../assets/icons/herbario.png"), ruta: "/herbarios" },
+    { titulo: "Zoología", icon: require("../../assets/icons/zoologia.png"), ruta: "/zoologia" },
+    { titulo: "Paleontología", icon: require("../../assets/icons/paleo.png"), ruta: "/paleo" },
   ] as const;
 
   return (
@@ -98,8 +100,16 @@ export default function HomeScreen() {
 
           </ImageBackground>
         </View>
+        <View style={styles.separator} />
             <HorarioCard />
+            <View style={styles.separator} />
+          <Text style={styles.miniTitulos}>Vení a visitarnos</Text>
         <ImageCarousel />
+        <VisitBanner />
+        <View style={styles.separator} />
+        <Text style={styles.miniTitulos}>Novedades</Text>
+        <Novedades/>
+        <View style={{ height: 40 }} />
       </ScrollView>
 
     </SafeAreaView>
@@ -107,10 +117,25 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
+  miniTitulos:{
+    fontSize: 24,
+    fontWeight: "800",
+    color: "#3f3830ff",
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: "center",
+  },
+  separator: { 
+    height: 1, 
+    backgroundColor: "#d6d4d4ff", 
+    marginVertical: 8,
+    marginHorizontal: 20
+  },
   heroContainer: {
     width: "100%",
     overflow: "hidden",
     ...(Platform.OS === "web" && { minHeight: "50%" }),
+    marginBottom: 20
   },
   background: {
     flex: 1,
