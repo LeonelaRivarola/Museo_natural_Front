@@ -1,6 +1,8 @@
 import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
+import config from "../app/config/config";
+
 import {
   Alert,
   Image,
@@ -11,6 +13,7 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
+
 
 export default function AgregarProducto() {
   const router = useRouter();
@@ -27,69 +30,12 @@ export default function AgregarProducto() {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       quality: 0.8,
-      base64: true,
     });
 
-    if (result.canceled) return;
-    const asset = result.assets[0];
-    const uri = asset.uri;
-    const isWeb = uri.startsWith("data:image");
-
-    try {
-      setSubiendo(true);
-      let res;
-
-      if (isWeb || asset.base64) {
-        const imagenBase64 = asset.base64
-          ? `data:image/jpeg;base64,${asset.base64}`
-          : uri;
-
-        res = await fetch(
-          "http://192.168.0.151/ProyectoFinal/backend/subir_imagen.php",
-          {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ imagen: imagenBase64 }),
-          }
-        );
-      } else {
-        const nombreArchivo = uri.split("/").pop() || "imagen.jpg";
-        const tipo = nombreArchivo.endsWith(".png")
-          ? "image/png"
-          : "image/jpeg";
-
-        const formData = new FormData();
-        formData.append("imagen", {
-          uri,
-          name: nombreArchivo,
-          type: tipo,
-        } as any);
-
-        res = await fetch(
-          "http://192.168.0.151/ProyectoFinal/backend/subir_imagen.php",
-          {
-            method: "POST",
-            body: formData,
-          }
-        );
-      }
-
-      const text = await res.text();
-      console.log("📤 Respuesta subir_imagen.php:", text);
-
-      const data = JSON.parse(text);
-      if (data.status === 200) {
-        setImagen(data.url);
-        Alert.alert("Éxito", "Imagen subida correctamente");
-      } else {
-        Alert.alert("Error", data.message || "No se pudo subir la imagen");
-      }
-    } catch (err) {
-      console.error("❌ Error al subir imagen:", err);
-      Alert.alert("Error", "No se pudo subir la imagen");
-    } finally {
-      setSubiendo(false);
-    }
+    if (!result.canceled) {
+       const asset = result.assets[0];
+      setImagen(asset.uri);
+    }   
   };
 
   // 🧾 Guardar producto
@@ -101,17 +47,27 @@ export default function AgregarProducto() {
 
     setGuardando(true);
     try {
+      const formData = new FormData();
+      formData.append("nombre", nombre);
+      formData.append("precio", precio);
+      formData.append("descripcion", descripcion);
+
+      if(imagen){
+        const nombreArchivo = imagen.split("/").pop() || "imagen.jpg";
+        const tipo = nombreArchivo.endsWith(".png") ? "image/png" : "image/jpeg";
+        
+        formData.append("imagen", {
+          uri: imagen,
+          name: nombreArchivo,
+          type: tipo,
+        } as any);
+      }
+
       const res = await fetch(
-        "http://192.168.0.151/ProyectoFinal/backend/agregar_producto.php",
+        `${config.BASE_URL}/agregar_producto.php`,
         {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            nombre,
-            precio,
-            descripcion,
-            imagen: imagen || "",
-          }),
+          body: formData,
         }
       );
 
@@ -120,7 +76,7 @@ export default function AgregarProducto() {
 
       const data = JSON.parse(text);
 
-      if (data.success) {
+      if (data.status === 200) {
         Alert.alert("Éxito", "Producto agregado correctamente", [
           {
             text: "Aceptar",

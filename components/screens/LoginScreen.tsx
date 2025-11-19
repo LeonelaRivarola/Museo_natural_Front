@@ -1,4 +1,5 @@
 // app/login.tsx
+import config from "@/app/config/config";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useRouter } from "expo-router";
 import React, { useState } from "react";
@@ -18,7 +19,7 @@ export default function LoginScreen() {
     }
 
     try {
-      const res = await fetch("http://192.168.0.151/ProyectoFinal/backend/login.php", {
+      const res = await fetch(`${config.BASE_URL}/login.php`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ usuario, password }),

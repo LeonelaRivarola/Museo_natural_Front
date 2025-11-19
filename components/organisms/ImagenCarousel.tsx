@@ -16,19 +16,24 @@ const SPACING = 10; // ← Spacing positivo
 
 const slides = [
   {
-    title: "MIGRACIÓN",
-    description: "Los seres humanos siempre se han desplazado.",
+    title: "MACACHIN",
+    description: "Alumnos/as de 4to grado de la Escuela N°82.",
     image: require("../../assets/images/gallery1.jpg"),
   },
   {
-    title: "CULTURA",
-    description: "Explora expresiones culturales y tradiciones.",
+    title: "GENERAL PICO",
+    description: "participantes del Workshop Museos y Monumentos organizado por el IESH.",
     image: require("../../assets/images/gallery2.jpg"),
   },
   {
-    title: "NATURALEZA",
-    description: "Admira la belleza natural y biodiversidad.",
+    title: "SANTA ROSA",
+    description: "Sala de 4 años del JIN N°4 de la Escuela N°258.",
     image: require("../../assets/images/gallery3.jpg"),
+  },
+  {
+    title: "SANTA ROSA",
+    description: "estudiantes de la Cátedra Cultura y Comunicación de la carrera Comunicación Social (FCHs-UNLPam).",
+    image: require("../../assets/images/gallery4.jpg"),
   },
 ];
 
@@ -145,7 +150,7 @@ export default function ImageCarousel(): React.ReactElement {
 
 const styles = StyleSheet.create({
   container: {
-    height: 360,
+    height: 280,
     marginVertical: 10,
   },
   indicators: {

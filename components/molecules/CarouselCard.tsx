@@ -15,7 +15,7 @@ export default function CarouselCard({ title, description, image }: CarouselCard
     <View style={styles.card}>
       <ImageBackground source={image} style={styles.image}>
         <LinearGradient
-          colors={["rgba(0,0,0,0.6)", "transparent"]}
+          colors={["transparent", "rgba(0,0,0,0.7)"]}
           style={styles.gradient}
         />
 
@@ -30,7 +30,6 @@ export default function CarouselCard({ title, description, image }: CarouselCard
 
 const styles = StyleSheet.create({
   card: {
-    // width: "100%",
     height: 250,
     borderRadius: 12,
     overflow: "hidden",
@@ -42,7 +41,6 @@ const styles = StyleSheet.create({
   },
   gradient: {
     ...StyleSheet.absoluteFillObject,
-    // justifyContent: "flex-end",
   },
   content: {
     padding: 20,

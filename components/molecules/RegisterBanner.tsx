@@ -2,24 +2,31 @@ import { useRouter } from "expo-router";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-export default function VisitBanner() {
+export default function RegisterBanner() {
   const router = useRouter();
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>¿Querés visitarnos?</Text>
+      <Text style={styles.title}>¡Sumate a la comunidad!</Text>
 
       <Text style={styles.text}>
-        Podés venir en nuestros horarios abiertos al público o coordinar una 
-        visita guiada para escuelas, grupos o turistas.
+        Creá tu cuenta y recibí novedades sobre eventos, talleres, actividades 
+        especiales y más. ¡No te pierdas nada!
       </Text>
 
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={[styles.button, styles.primary]}
-          onPress={() => router.push("/visitas")}
+          onPress={() => router.push("/registrar")}
         >
-          <Text style={styles.buttonText}>Agendar visita</Text>
+          <Text style={styles.buttonText}>Crear cuenta</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[styles.button, styles.secondary]}
+          onPress={() => router.push("/login")}
+        >
+          <Text style={styles.buttonTextSecondary}>Iniciar sesión</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -64,6 +71,7 @@ const styles = StyleSheet.create({
   secondary: {
     borderWidth: 2,
     borderColor: "#c47719",
+    backgroundColor: "transparent",
   },
   buttonText: {
     color: "#fff",

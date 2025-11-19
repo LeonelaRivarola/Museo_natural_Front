@@ -4,16 +4,18 @@ import {
   ActivityIndicator,
   Image,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import BottomNavMobil from "../../components/organisms/BottomNavMobil";
 import NavbarWeb from "../../components/organisms/Navbar";
 import NavMobil from "../../components/organisms/NavMobil";
+import config from "../config/config";
+
 
 export default function ProductDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -22,7 +24,7 @@ export default function ProductDetailScreen() {
 
   useEffect(() => {
     if (!id) return;
-    fetch(`http://192.168.0.151/ProyectoFinal/backend/producto.php?id=${id}`)
+    fetch(`${config.BASE_URL}/producto.php?id=${id}`)
       .then((res) => res.json())
       .then((data) => setProducto(data))
       .catch((err) => console.error("❌ Error al cargar producto:", err))

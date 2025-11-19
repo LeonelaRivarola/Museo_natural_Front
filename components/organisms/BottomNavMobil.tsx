@@ -7,7 +7,11 @@ import SideMenu from "./SideMenu";
 
 type ValidPaths = "/home" | "/galeria" | "/qr" | "/tienda" | "/menu";
 
-export default function BottomNavMobile() {
+type BottomNavMobileProps = {
+  onMenuPress: () => void;
+};
+
+export default function BottomNavMobile({ onMenuPress }: BottomNavMobileProps) {
   const pathname = usePathname();
   const router = useRouter();
   const accentColor = useThemeColor({}, "tint");
@@ -30,7 +34,7 @@ export default function BottomNavMobile() {
             key={tab.name}
             onPress={() => {
               if (tab.name === "menu") {
-                setMenuVisible(true);
+                onMenuPress();
               } else {
                 router.push(tab.path as any);
               }

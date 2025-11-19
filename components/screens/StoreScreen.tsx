@@ -1,8 +1,10 @@
 import React from "react";
-import { Platform, SafeAreaView, StyleSheet, View } from "react-native";
+import { Platform, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import NavbarWeb from "../../components/organisms/Navbar";
 import NavbarMobile from "../../components/organisms/NavMobil";
 import ProductList from "../../components/organisms/ProductList";
+
 
 export default function StoreScreen() {
   return (

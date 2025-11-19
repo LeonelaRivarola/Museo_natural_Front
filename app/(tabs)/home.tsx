@@ -1,4 +1,5 @@
 import HorarioCard from "@/components/molecules/HorarioCard";
+import RegisterBanner from "@/components/molecules/RegisterBanner";
 import { useThemeColor } from "@/hooks/use-theme-color";
 import { useRouter } from "expo-router";
 import React from "react";
@@ -7,18 +8,19 @@ import {
   Image,
   ImageBackground,
   Platform,
-  SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Novedades from "../../components/molecules/Novedades";
 import VisitBanner from "../../components/molecules/VisitaBanner";
 import ImageCarousel from "../../components/organisms/ImagenCarousel";
 import NavbarWeb from "../../components/organisms/Navbar";
 import NavbarMobile from "../../components/organisms/NavMobil";
+
 
 export default function HomeScreen() {
   const windowHeight = Dimensions.get("window").height;
@@ -101,15 +103,26 @@ export default function HomeScreen() {
           </ImageBackground>
         </View>
         <View style={styles.separator} />
-            <HorarioCard />
-            <View style={styles.separator} />
-          <Text style={styles.miniTitulos}>Vení a visitarnos</Text>
-        <ImageCarousel />
-        <VisitBanner />
+
+        <HorarioCard />
+
         <View style={styles.separator} />
+
+        <Text style={styles.miniTitulos}>Vení a visitarnos</Text>
+
+        <ImageCarousel />
+
+        <VisitBanner />
+
+        <View style={styles.separator} />
+
         <Text style={styles.miniTitulos}>Novedades</Text>
-        <Novedades/>
-        <View style={{ height: 40 }} />
+        <Novedades />
+
+        <View style={styles.separator} />
+        <View style={{ height: 20 }} />
+
+        <RegisterBanner />
       </ScrollView>
 
     </SafeAreaView>
@@ -117,7 +130,7 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  miniTitulos:{
+  miniTitulos: {
     fontSize: 24,
     fontWeight: "800",
     color: "#3f3830ff",
@@ -125,9 +138,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
     textAlign: "center",
   },
-  separator: { 
-    height: 1, 
-    backgroundColor: "#d6d4d4ff", 
+  separator: {
+    height: 1,
+    backgroundColor: "#d6d4d4ff",
     marginVertical: 8,
     marginHorizontal: 20
   },

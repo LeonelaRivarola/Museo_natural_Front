@@ -18,9 +18,7 @@ export default function ProductImage({ uri }: { uri: string | null }) {
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    height: 150,
-    borderRadius: 10,
-    overflow: "hidden",
+    height: 140,
     backgroundColor: "#eee",
   },
   image: {

@@ -11,6 +11,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
+import config from "../app/config/config";
 
 export default function EditarProducto() {
     const { id } = useLocalSearchParams();
@@ -19,7 +20,7 @@ export default function EditarProducto() {
     const [guardando, setGuardando] = useState(false);
 
     useEffect(() => {
-        fetch(`http://192.168.0.151/ProyectoFinal/backend/producto.php?id=${id}`)
+        fetch(`${config.BASE_URL}/producto.php?id=${id}`)
             .then((res) => res.json())
             .then((data) => setProducto(data))
             .catch((err) => console.error("❌ Error al cargar producto:", err));
@@ -48,7 +49,7 @@ export default function EditarProducto() {
                         : uri;
 
                     res = await fetch(
-                        "http://192.168.0.151/ProyectoFinal/backend/subir_imagen.php",
+                        `${config.BASE_URL}/subir_imagen.php`,
                         {
                             method: "POST",
                             headers: { "Content-Type": "application/json" },
@@ -68,7 +69,7 @@ export default function EditarProducto() {
                     } as any);
 
                     res = await fetch(
-                        "http://192.168.0.151/ProyectoFinal/backend/subir_imagen.php",
+                        `${config.BASE_URL}/subir_imagen.php`,
                         {
                             method: "POST",
                             body: formData,
@@ -99,7 +100,7 @@ export default function EditarProducto() {
         setGuardando(true);
         try {
             const res = await fetch(
-                "http://192.168.0.151/ProyectoFinal/backend/editar_producto.php",
+                `${config.BASE_URL}/editar_producto.php`,
                 {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },

@@ -13,9 +13,8 @@ export default function ProductPrice({ price }: { price: number }) {
 
 const styles = StyleSheet.create({
   price: {
-    fontSize: 15,
+    fontSize: 16,
     color: "#c47719",
-    fontWeight: "600",
-    marginTop: 4,
+    fontWeight: "700",
   },
 });
