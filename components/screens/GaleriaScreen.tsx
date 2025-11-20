@@ -3,13 +3,13 @@ import { useThemeColor } from "@/hooks/use-theme-color";
 import { router, useLocalSearchParams } from "expo-router";
 import React, { useEffect, useState } from "react";
 import {
-    Image,
-    Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Image,
+  Platform,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NavbarWeb from "../../components/organisms/Navbar";
@@ -27,7 +27,7 @@ const categories = [
   "Coleccion",
   "Arqueología",
   "Herbarios",
-  "Zoologia",
+  "Zoología",
   "Paleontología",
 ];
 

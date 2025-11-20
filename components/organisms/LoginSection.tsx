@@ -1,16 +1,15 @@
 import React from "react";
 import {
-  View,
-  ImageBackground,
   Image,
-  StyleSheet,
+  ImageBackground,
   Platform,
+  StyleSheet,
   Text,
-  TouchableOpacity,
+  View
 } from "react-native";
+import ButtonPrimary from "../atoms/ButtonPrimary";
 import TextTitle from "../atoms/TextTitle";
 import LoginForm from "../molecules/LoginForm";
-import ButtonPrimary from "../atoms/ButtonPrimary";
 
 interface Props {
   usuario: string;
@@ -59,6 +58,8 @@ const LoginSection: React.FC<Props> = ({
               <View style={styles.buttonWrapper}>
                 <ButtonPrimary title="Ingresar" onPress={onSubmit} />
               </View>
+
+           
 
               {/* Línea separadora */}
               <View style={styles.separatorContainer}>

@@ -234,6 +234,18 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
                 router.push("/ayuda");
               }}
             />
+            {/* SOLO mostrar Configuración si hay sesión */}
+            {user && (
+              <MenuItem
+                label="Configuración"
+                iconName="settings-outline"
+                highlight={currentPath.startsWith("/configuracion")}
+                onPress={() => {
+                  onClose();
+                  router.push("/configuracion");
+                }}
+              />
+            )}
             <MenuItem
               label="¿Quiénes somos?"
               iconName="information-circle-outline"
@@ -244,6 +256,7 @@ const SideMenu: React.FC<SideMenuProps> = ({ visible, onClose }) => {
               }}
             />
           </View>
+
 
           {/* BOTON FINAL */}
           <View style={styles.bottomButton}>
