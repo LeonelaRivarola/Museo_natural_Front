@@ -12,13 +12,23 @@ export default function ProductCard({ item, isAdmin = false, onEdit, onDelete }:
   return (
     <View style={styles.card}>
       {/* Imagen */}
-      <TouchableOpacity
-        activeOpacity={0.9}
-        onPress={() => router.push(`/product/${item.id_producto}`)}
+      {/* Imagen */}
+<TouchableOpacity
+  activeOpacity={0.9}
+  onPress={() => router.push(`/product/${item.id_producto}`)}
+>
+  <ProductImage uri={item.imagen} />
+  {/* Botón de carrito sobre la imagen */}
+  {!isAdmin && (
+    <TouchableOpacity
+      style={styles.cartButton}
+      onPress={() => console.log("Agregar al carrito:", item.id_producto)}
+    >
+      <Ionicons name="cart-outline" size={22} color="#fff" />
+    </TouchableOpacity>
+  )}
+</TouchableOpacity>
 
-      >
-        <ProductImage uri={item.imagen} />
-      </TouchableOpacity>
 
 
       {/* Contenido */}
@@ -101,4 +111,22 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#444",
   },
+  cartButton: {
+  position: "absolute",
+  top: 10,
+  right: 10,
+  backgroundColor: "#c47719",
+  width: 38,
+  height: 38,
+  borderRadius: 19,
+  justifyContent: "center",
+  alignItems: "center",
+  elevation: 5,
+  shadowColor: "#000",
+  shadowOpacity: 0.2,
+  shadowOffset: { width: 0, height: 3 },
+  shadowRadius: 4,
+  zIndex: 10,
+},
+
 });

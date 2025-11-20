@@ -14,6 +14,10 @@ export const Colors = {
     icon: "#555",
     tabIconDefault: "#777",
     tabIconSelected: tintColorLight,
+     card: "#ffffff",
+    cardBorder: "#ddd",
+    chipBg: "#e0e0e0",
+    chipActiveBg: tintColorLight,
   },
   dark: {
     text: "#fff",
@@ -22,9 +26,13 @@ export const Colors = {
     navbarBackground: tintColorDark,
     navbarText: "#fff", // sigue blanco en modo oscuro
     buttonText: "#fff",
-    icon: "#aaa",
+    icon: "#d3d3d3ff",
     tabIconDefault: "#aaa",
     tabIconSelected: tintColorDark,
+     card: "#1e1f20",
+    cardBorder: "#333",
+    chipBg: "#2a2a2a",
+    chipActiveBg: tintColorDark,
   },
 };
 
